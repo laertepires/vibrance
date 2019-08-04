@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Container } from './styles';
-import { View, StyleSheet, Dimensions, Text } from 'react-native';
+import { Dimensions } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
-import { DrawerLayout } from 'react-native-gesture-handler';
+import { DrawerLayout} from 'react-native-gesture-handler';
+
 
 import Latest from '../../components/latest';
 import Favorites from '../../components/favorites';
@@ -10,15 +11,14 @@ import All from '../../components/all';
 import Header from '../../components/header';
 import Drawer from '../../components/drawer';
 
+
 const LatestRoute = () => ( <Latest /> );
-
 const FavoritesRoute = () => ( <Favorites/> );
-
 const AllRoute = () => ( <All/> );
+const navigationView = ( { param } ) => ( <Drawer onPress={ param }/> );
 
-const navigationView = () => ( <Drawer/> );
 
-export default function Main() {
+export default function Main( ) {
 
   const initialState = {
     index: 0,
@@ -31,7 +31,8 @@ export default function Main() {
 
   const [ state, setState ] = useState(initialState);
 
-  function selectTab ( index ) {
+  const selectTab = (index) => {
+
     this.initialState = {
       index: index,
       routes: [
@@ -42,17 +43,20 @@ export default function Main() {
     };
     return setState(this.initialState);
   }
-  
-  return (
-    <Container>
 
+  return (
+    
+    <Container>
       <DrawerLayout
         drawerWidth={350}
         drawerPosition={DrawerLayout.positions.Left}
         drawerType='slide'
         drawerBackgroundColor="#292b44"
-        renderNavigationView={navigationView}>
-        <Header />
+        renderNavigationView={navigationView}
+        ref={drawer => { this.drawer = drawer }}>
+  
+        <Header onOpenDrawer={() => this.drawer.openDrawer()}/>
+
         <TabView
           navigationState={state}
           renderScene={SceneMap({  latest: LatestRoute,  favorites: FavoritesRoute, all: AllRoute  })}
